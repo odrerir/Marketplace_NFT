@@ -47,11 +47,15 @@ export interface Paginated<T> {
   totalPages: number
 }
 
+export interface NftFacets {
+  categories: Record<string, number>
+  networks: Record<string, number>
+  /** Menor e maior preço da loja, independente dos filtros. */
+  priceRange: { min: EthAmount; max: EthAmount }
+}
+
 export interface NftListResponse extends Paginated<Nft> {
-  facets: {
-    categories: Record<string, number>
-    networks: Record<string, number>
-  }
+  facets: NftFacets
 }
 
 export interface ListNftsParams {

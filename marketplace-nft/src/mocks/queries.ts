@@ -1,4 +1,4 @@
-import { toWei } from '@/lib/eth'
+import { fromWei, toWei } from '@/lib/eth'
 import type { ListNftsParams, Nft, NftListResponse } from '@/types/api'
 
 const normalize = (s: string) =>
@@ -47,6 +47,14 @@ export function queryNfts(all: Nft[], p: ListNftsParams): NftListResponse {
     pageSize,
     total: sorted.length,
     totalPages: Math.max(1, Math.ceil(sorted.length / pageSize)),
-    facets: { categories: countBy(all, 'category'), networks: countBy(all, 'network') },
+    facets: { categories: countBy(all, 'category'), networks: countBy(all, 'network'), priceRange: priceRange(all)},
   }
+}
+
+function priceRange(items: Nft[]) {
+  if (items.length === 0) return { min: '0.00', max: '0.00' }
+  const wei = items.map((n) => toWei(n.price))
+  const min = wei.reduce((a, b) => (b < a ? b : a))
+  const max = wei.reduce((a, b) => (b > a ? b : a))
+  return { min: fromWei(min), max: fromWei(max) }
 }

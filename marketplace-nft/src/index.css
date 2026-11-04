@@ -1,9 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import "@fontsource-variable/roboto-mono";
+
 :root {
   color-scheme: dark;
+  --radius: 0.625rem;
   --background: #140d0a;
   --foreground: #f5f1eb;
   --card: #241612;
@@ -25,6 +27,32 @@
 }
 
 @theme inline {
+  /* Mapeamento shadcn: gera bg-card, text-primary, border-border etc. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Cores da marca (Figma) */
   --color-brand-light: #dd9a5f;
   --color-brand-dark: #c47b3e;
   --color-amber: #e3a44e;
@@ -34,4 +62,41 @@
   --color-accent-text: #e89b55;
   --color-coral: #f0805f;
   --color-success: #00a66c;
+
+  --font-sans: 'Roboto Mono Variable', ui-monospace, monospace;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--secondary);
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(245 241 235 / 0.06), transparent);
+  animation: shimmer 1.4s infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after { animation: none; }
+}
+@utility bg-gradient-fab {
+  background: linear-gradient(180deg, rgba(210, 138, 76, 0.4) -16.92%, #d28a4c 109.23%);
+}
+@utility bg-gradient-filter {
+  background: linear-gradient(137.05deg, rgba(210, 138, 76, 0.45) -24.6%, #d28a4c 100%);
 }

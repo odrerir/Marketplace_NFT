@@ -3,7 +3,7 @@ import type { Nft } from '@/types/api'
 export function NftCard({ nft }: { nft: Nft }) {
   return (
     <article>
-      <div className="relative h-[200px] rounded-[20px] bg-card px-1 pb-5 pt-3">
+      <div className="relative rounded-[20px] bg-card px-1 pb-5 pt-3">
         <img
           src={nft.images[0]}
           alt={nft.name}
@@ -37,7 +37,7 @@ export function NftCard({ nft }: { nft: Nft }) {
 export function NftCardSkeleton() {
   return (
     <div aria-hidden="true">
-      <div className="skeleton h-[200px] rounded-[20px]" />
+      <div className="skeleton aspect-[175/200] rounded-[20px]" />
       <div className="mt-2 space-y-2 px-2">
         <div className="skeleton h-4 w-3/4 rounded-[4px]" />
         <div className="skeleton h-5 w-1/2 rounded-[4px]" />

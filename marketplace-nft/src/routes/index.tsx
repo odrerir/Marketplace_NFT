@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { HomeMobile } from '@/features/home/HomeMobile'
+import { HomePage } from '@/features/home/HomePage'
 import { parseHomeSearch } from '@/features/home/search'
 
 export const Route = createFileRoute('/')({
   validateSearch: parseHomeSearch,
-  component: HomeMobile,
+  component: HomePage,
 })

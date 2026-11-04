@@ -1,23 +1,38 @@
 import { http, HttpResponse, delay } from 'msw'
-import { nfts } from './fixtures/nfts'
-import type { Nft, Paginated } from '@/types/api'
+import { db } from './db'
+import { queryNfts } from './queries'
+import type { ApiError, ListNftsParams } from '@/types/api'
+
+const num = (v: string | null) => (v ? Number(v) : undefined)
+
+function parseListParams(sp: URLSearchParams): ListNftsParams {
+  return {
+    page: num(sp.get('page')),
+    pageSize: num(sp.get('pageSize')),
+    q: sp.get('q') ?? undefined,
+    category: (sp.get('category') ?? undefined) as ListNftsParams['category'],
+    network: (sp.get('network') ?? undefined) as ListNftsParams['network'],
+    minPrice: sp.get('minPrice') ?? undefined,
+    maxPrice: sp.get('maxPrice') ?? undefined,
+    tab: (sp.get('tab') ?? undefined) as ListNftsParams['tab'],
+    sort: (sp.get('sort') ?? undefined) as ListNftsParams['sort'],
+  }
+}
 
 export const handlers = [
   http.get('/api/nfts', async ({ request }) => {
-    const url = new URL(request.url)
-    const page = Number(url.searchParams.get('page') ?? 1)
-    const pageSize = Number(url.searchParams.get('pageSize') ?? 9)
+    const params = parseListParams(new URL(request.url).searchParams)
+    await delay(400)
+    return HttpResponse.json(queryNfts(db.nfts, params))
+  }),
 
-    await delay(600) // simula latência de rede
-
-    const start = (page - 1) * pageSize
-    const body: Paginated<Nft> = {
-      items: nfts.slice(start, start + pageSize),
-      page,
-      pageSize,
-      total: nfts.length,
-      totalPages: Math.max(1, Math.ceil(nfts.length / pageSize)),
+  http.get('/api/nfts/:id', async ({ params }) => {
+    await delay(300)
+    const nft = db.nfts.find((n) => n.id === params.id)
+    if (!nft) {
+      const body: ApiError = { code: 'NOT_FOUND', message: 'NFT não encontrado.' }
+      return HttpResponse.json(body, { status: 404 })
     }
-    return HttpResponse.json(body)
+    return HttpResponse.json(nft)
   }),
 ]

@@ -16,8 +16,8 @@ export function TopNav({ q, onSearch }: { q?: string; onSearch: (q?: string) => 
   }
 
   return (
-    <header className="hidden border-b border-border lg:block">
-      <div className="mx-auto flex h-[68px] max-w-[1248px] items-center justify-between px-6">
+    <header className="hidden  lg:block">
+      <div className="mx-auto flex h-[68px] max-w-[1248px] border-b border-border items-center justify-between px-6">
         <Link to="/" className="text-sm font-bold tracking-[0.2em]">KURIO</Link>
         <nav aria-label="Principal">
           <ul className="flex items-center gap-10 text-[15px]">

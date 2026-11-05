@@ -2,7 +2,7 @@ import { nftFixtures } from './fixtures/nfts'
 import { userFixtures } from './fixtures/users'
 import type { Nft } from '@/types/api'
 
-const STORAGE_KEY = 'kurio-mock-db:v2'
+const STORAGE_KEY = 'kurio-mock-db:v3'
 
 export interface StoredUser {
   id: string
@@ -19,10 +19,16 @@ export interface StoredSession {
   expiresAt: string
 }
 
+export interface StoredFavorite {
+  userId: string
+  nftId: string
+}
+
 interface DbState {
   nfts: Nft[]
   users: StoredUser[]
   sessions: StoredSession[]
+  favorites: StoredFavorite[]
 }
 
 function seed(): DbState {
@@ -30,6 +36,7 @@ function seed(): DbState {
     nfts: structuredClone(nftFixtures),
     users: structuredClone(userFixtures),
     sessions: [],
+    favorites: [],
   }
 }
 
@@ -37,9 +44,9 @@ function load(): DbState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    const parsed = JSON.parse(raw) as Partial<DbState>
-    return Array.isArray(parsed.nfts) && Array.isArray(parsed.users) && Array.isArray(parsed.sessions)
-      ? (parsed as DbState)
+    const p = JSON.parse(raw) as Partial<DbState>
+    return Array.isArray(p.nfts) && Array.isArray(p.users) && Array.isArray(p.sessions) && Array.isArray(p.favorites)
+      ? (p as DbState)
       : null
   } catch {
     return null
@@ -65,6 +72,9 @@ export const db = {
   },
   get sessions() {
     return state.sessions
+  },
+  get favorites() {
+    return state.favorites
   },
   /** Todas as escritas passam por aqui, para sempre persistirem. */
   update(mutator: (s: DbState) => void) {

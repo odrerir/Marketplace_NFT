@@ -4,6 +4,7 @@ import { queryNfts } from './queries'
 import type { ApiError, ListNftsParams } from '@/types/api'
 import { realtimeHandlers } from './realtime'
 import { authHandlers } from './authHandlers'
+import { favoritesHandlers } from './favoritesHandlers'
 
 const num = (v: string | null) => (v ? Number(v) : undefined)
 
@@ -39,4 +40,5 @@ export const handlers = [
   }),
   ...realtimeHandlers,
   ...authHandlers,
+  ...favoritesHandlers,
 ]

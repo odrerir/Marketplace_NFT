@@ -113,3 +113,7 @@ export interface SessionResponse {
   user: User
   expiresAt: string
 }
+
+export interface FavoritesResponse {
+  nftIds: string[]
+}

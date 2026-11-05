@@ -14,10 +14,5 @@ export const realtimeHandlers = [
     const ping = setInterval(() => connection.client.send('2'), PING_INTERVAL_MS)
     connection.client.addEventListener('close', () => clearInterval(ping))
 
-    // Eventos de teste do spike. O primeiro argumento do ouvinte é o evento bruto.
-    io.client.on('spike.ping', (_event, text) => {
-      io.client.emit('spike.pong', { text, at: new Date().toISOString() })
-    })
-    io.client.on('spike.drop', () => connection.client.close())
   }),
 ]

@@ -1,13 +1,25 @@
 import type { ReactNode } from 'react'
 import { Link, useSearch } from '@tanstack/react-router'
+import { ArrowLeft } from 'lucide-react'
+import { useSession } from '@/lib/auth'
 
 export function AuthShell({ subtitle, children }: { subtitle: string; children: ReactNode }) {
   const { redirect } = useSearch({ strict: false })
+  const { user } = useSession()
   const tab = 'border-b-2 pb-1 text-lg font-bold'
 
   return (
     <main className="flex min-h-dvh items-center justify-center px-4 py-10">
       <div className="w-full max-w-[500px] rounded-[12px] border-b-[6px] border-primary bg-card px-6 pb-8 pt-10 sm:px-12">
+        {!user && (
+          <Link
+            to="/"
+            className="mb-6 inline-flex h-10 items-center gap-2 rounded-[8px] px-2 text-sm font-bold text-muted-foreground hover:bg-secondary hover:text-foreground"
+          >
+            <ArrowLeft className="size-5" aria-hidden="true" />
+            Voltar
+          </Link>
+        )}
         <Link to="/" className="mb-8 block text-center text-3xl font-bold tracking-[0.2em]">
           KURIO
         </Link>

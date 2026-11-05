@@ -14,3 +14,8 @@ export function getSocket(): Promise<Socket> {
   )
   return socketPromise
 }
+
+/** Chamado no logout e na expiração: a sessão anterior não pode manter subscriptions. */
+export function disconnectSocket(): void {
+  void socketPromise?.then((socket) => socket.disconnect())
+}

@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Heart, House, ScanLine, ShoppingCart, User } from 'lucide-react'
+import { useSession } from '@/lib/auth'
 
 const items = [
   { id: 'home', label: 'Início', icon: House, filled: true },
@@ -18,6 +19,8 @@ function focusSearch() {
 }
 
 export function BottomNav() {
+  const { user } = useSession()
+
   return (
     <div
       className="fixed inset-x-0 bottom-0 z-40 h-[94.95px]"
@@ -36,18 +39,19 @@ export function BottomNav() {
             return (
               <Fragment key={item.id}>
                 {i === 2 && <li aria-hidden="true" className="w-[65px]" />}
-                <li>
-                  {item.id === 'home' ? (
-                    <Link to="/" aria-label={item.label} aria-current="page" className="-m-3 flex p-3 text-primary">
-                      {icon}
-                    </Link>
-                  ) : (
-                    // Ligados nas próximas branches (favoritos, carrinho, perfil)
-                    <button type="button" disabled aria-label={item.label} className="-m-3 flex p-3 text-muted-foreground opacity-60">
-                      {icon}
-                    </button>
-                  )}
-                </li>
+                {item.id === 'home' ? (
+                  <Link to="/" aria-label={item.label} aria-current="page" className="-m-3 flex p-3 text-primary">
+                    {icon}
+                  </Link>
+                ) : item.id === 'profile' ? (
+                  <Link to={user ? '/perfil' : '/login'} aria-label={user ? 'Perfil' : 'Entrar'} className="-m-3 flex p-3 text-muted-foreground">
+                    {icon}
+                  </Link>
+                ) : (
+                  <button type="button" disabled aria-label={item.label} className="-m-3 flex p-3 text-muted-foreground opacity-60">
+                    {icon}
+                  </button>
+                )}
               </Fragment>
             )
           })}

@@ -5,6 +5,7 @@ import type { ApiError, ListNftsParams } from '@/types/api'
 import { realtimeHandlers } from './realtime'
 import { authHandlers } from './authHandlers'
 import { favoritesHandlers } from './favoritesHandlers'
+import { cartHandlers } from './cartHandlers'
 
 const num = (v: string | null) => (v ? Number(v) : undefined)
 
@@ -41,4 +42,5 @@ export const handlers = [
   ...realtimeHandlers,
   ...authHandlers,
   ...favoritesHandlers,
+  ...cartHandlers,
 ]

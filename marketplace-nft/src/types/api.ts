@@ -117,3 +117,47 @@ export interface SessionResponse {
 export interface FavoritesResponse {
   nftIds: string[]
 }
+
+export interface CartLine {
+  id: string
+  nftId: string
+  name: string
+  tokenId: string
+  image: string
+  editionId: string
+  editionLabel: string
+  unitPrice: EthAmount
+  quantity: number
+  lineTotal: EthAmount
+  available: number
+  /** A quantidade passou do disponível (ex.: a edição esgotou). */
+  unavailable: boolean
+}
+
+export interface CartCoupon {
+  code: string
+  description: string
+}
+
+export interface CartResponse {
+  items: CartLine[]
+  coupon?: CartCoupon
+  subtotal: EthAmount
+  discount: EthAmount
+  networkFee: EthAmount
+  total: EthAmount
+  /** Identifica esta cotação; o pagamento confere se ainda é a mesma. */
+  quoteId: string
+  itemCount: number
+  hasIssues: boolean
+}
+
+export interface MergeCartResponse extends CartResponse {
+  merged: number
+}
+
+export interface AddCartItemRequest {
+  nftId: string
+  editionId: string
+  quantity: number
+}

@@ -2,7 +2,7 @@ import { nftFixtures } from './fixtures/nfts'
 import { userFixtures } from './fixtures/users'
 import type { Nft } from '@/types/api'
 
-const STORAGE_KEY = 'kurio-mock-db:v3'
+const STORAGE_KEY = 'kurio-mock-db:v4'
 
 export interface StoredUser {
   id: string
@@ -24,11 +24,27 @@ export interface StoredFavorite {
   nftId: string
 }
 
+/** ownerId: "user:<id>" para logados, "guest:<id>" para visitantes. */
+export interface StoredCartItem {
+  id: string
+  ownerId: string
+  nftId: string
+  editionId: string
+  quantity: number
+}
+
+export interface StoredCartCoupon {
+  ownerId: string
+  code: string
+}
+
 interface DbState {
   nfts: Nft[]
   users: StoredUser[]
   sessions: StoredSession[]
   favorites: StoredFavorite[]
+  cartItems: StoredCartItem[]
+  cartCoupons: StoredCartCoupon[]
 }
 
 function seed(): DbState {
@@ -37,6 +53,8 @@ function seed(): DbState {
     users: structuredClone(userFixtures),
     sessions: [],
     favorites: [],
+    cartItems: [],
+    cartCoupons: [],
   }
 }
 
@@ -45,9 +63,8 @@ function load(): DbState | null {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
     const p = JSON.parse(raw) as Partial<DbState>
-    return Array.isArray(p.nfts) && Array.isArray(p.users) && Array.isArray(p.sessions) && Array.isArray(p.favorites)
-      ? (p as DbState)
-      : null
+    const ok = [p.nfts, p.users, p.sessions, p.favorites, p.cartItems, p.cartCoupons].every(Array.isArray)
+    return ok ? (p as DbState) : null
   } catch {
     return null
   }
@@ -75,6 +92,12 @@ export const db = {
   },
   get favorites() {
     return state.favorites
+  },
+  get cartItems() {
+    return state.cartItems
+  },
+  get cartCoupons() {
+    return state.cartCoupons
   },
   /** Todas as escritas passam por aqui, para sempre persistirem. */
   update(mutator: (s: DbState) => void) {

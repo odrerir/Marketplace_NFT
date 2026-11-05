@@ -1,12 +1,14 @@
 import axios, { isAxiosError } from 'axios'
 import { clearToken, emitSessionExpired, getToken } from './session'
 import type { ApiError } from '@/types/api'
+import { getGuestId } from './guest'
 
 export const api = axios.create({ baseURL: '/api', timeout: 10_000 })
 
 api.interceptors.request.use((config) => {
   const token = getToken()
   if (token) config.headers.set('Authorization', `Bearer ${token}`)
+  config.headers.set('X-Guest-Id', getGuestId())
   return config
 })
 

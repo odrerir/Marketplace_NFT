@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Link, getRouteApi } from '@tanstack/react-router'
+import { Link, getRouteApi, useNavigate } from '@tanstack/react-router'
 import { isAxiosError } from 'axios'
 import { ArrowLeft, Minus, Plus, ShoppingCart, Star } from 'lucide-react'
 import { listNfts, nftQueryOptions } from '@/api/nfts'
 import { Footer } from '@/components/Footer'
 import { FavoriteButton } from '@/features/favorites/FavoriteButton'
+import { useCartMutations } from '@/features/cart/useCart'
 import { NETWORK_LABELS } from '@/features/home/labels'
 import { NftCard } from '@/features/home/NftCard'
 import { TopNav } from '@/features/home/TopNav'
 import { fromWei, toWei } from '@/lib/eth'
+import { notify } from '@/lib/notify'
 import { cn } from '@/lib/utils'
 import type { Nft, NftEdition } from '@/types/api'
 
@@ -92,6 +94,20 @@ function Detail({ nft }: { nft: Nft }) {
   const [imageIndex, setImageIndex] = useState(0)
   const [editionId, setEditionId] = useState(() => defaultEdition(nft))
   const [quantity, setQuantity] = useState(1)
+  const navigate = useNavigate()
+  const { add } = useCartMutations()
+
+  function addToCart(thenGoToCart: boolean) {
+    add.mutate(
+      { nftId: nft.id, editionId, quantity: qty },
+      {
+        onSuccess: () => {
+          if (thenGoToCart) void navigate({ to: '/carrinho' })
+          else notify('Adicionado ao carrinho.', 'success', 3000)
+        },
+      },
+    )
+  }
 
   useEffect(() => {
     document.title = `${nft.name} | Kurio`
@@ -194,12 +210,11 @@ function Detail({ nft }: { nft: Nft }) {
               </div>
 
               <div className="mt-4 flex gap-3 lg:mt-0">
-                {/* Compra e carrinho: ligados na branch feat/cart */}
-                <button type="button" disabled className="h-12 flex-1 rounded-[12px] bg-gradient-fab font-bold text-primary-foreground disabled:opacity-60 lg:h-10 lg:flex-none lg:rounded-[4px] lg:bg-primary lg:bg-none lg:px-8 lg:text-sm">
+                <button type="button" disabled={soldOut || add.isPending} onClick={() => addToCart(true)} className="h-12 flex-1 rounded-[12px] bg-gradient-fab font-bold text-primary-foreground disabled:opacity-60 lg:h-10 lg:flex-none lg:rounded-[4px] lg:bg-primary lg:bg-none lg:px-8 lg:text-sm">
                   <span className="lg:hidden">Comprar NFT</span>
                   <span className="hidden lg:inline">COMPRAR</span>
                 </button>
-                <button type="button" disabled aria-label="Adicionar ao carrinho" className="flex size-12 items-center justify-center rounded-full bg-secondary opacity-60 lg:hidden">
+                <button type="button" disabled={soldOut || add.isPending} onClick={() => addToCart(false)} aria-label="Adicionar ao carrinho" className="flex size-12 items-center justify-center rounded-full bg-secondary disabled:opacity-60 lg:hidden">
                   <ShoppingCart className="size-5" aria-hidden="true" />
                 </button>
                 <FavoriteButton nftId={nft.id} variant="full" className="hidden lg:flex" />

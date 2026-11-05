@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { LogIn, Search, ShoppingCart, User, X } from 'lucide-react'
 import { useSession } from '@/lib/auth'
 import { SearchInput } from './searchInput'
+import { useCart } from '@/features/cart/useCart'
 
 const soon = ['Mercado', 'Criadores', 'Aprenda']
 const iconButton = 'flex size-10 items-center justify-center rounded-md hover:bg-secondary'
@@ -13,6 +14,8 @@ export function TopNav({ q, onSearch }: { q?: string; onSearch?: (q?: string) =>
   const [opened, setOpened] = useState(false)
   // Se a URL já tem uma busca (?q=...), o campo aparece aberto
   const open = !!onSearch && (opened || !!q)
+  const { data: cart } = useCart()
+  const count = cart?.itemCount ?? 0
 
   function toggle() {
     if (q) onSearch?.(undefined)
@@ -65,10 +68,14 @@ export function TopNav({ q, onSearch }: { q?: string; onSearch?: (q?: string) =>
               <Search className="size-6" />
             </Link>
           )}
-          {/* Carrinho: ligado na branch feat/cart */}
-          <button type="button" disabled aria-label="Carrinho" className="opacity-60">
+          <Link to="/carrinho" aria-label={count ? `Carrinho, ${count} itens` : 'Carrinho'} className="relative flex size-10  items-center justify-center rounded-md hover:bg-secondary">
             <ShoppingCart className="size-6" />
-          </button>
+            {count > 0 && (
+              <span aria-hidden="true" className="absolute right-0 top-0 flex size-5 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">
+                {count}
+              </span>
+            )}
+          </Link>
           {user ? (
             <Link to="/perfil" className={pill}>
               <User className="size-4" aria-hidden="true" /> {user.displayName}

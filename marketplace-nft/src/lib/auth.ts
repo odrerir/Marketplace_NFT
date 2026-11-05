@@ -7,8 +7,21 @@ import { queryClient } from './query-client'
 import { clearToken, onSessionExpired, setToken } from './session'
 import { disconnectSocket } from './socket'
 import type { AuthResponse } from '@/types/api'
+import { mergeCart } from '@/api/cart'
+import { getGuestId } from './guest'
 
 const notSession = (q: Query) => q.queryKey[0] !== 'session'
+
+/** Leva o carrinho do visitante para a conta que acabou de entrar. */
+async function mergeGuestCart() {
+  try {
+    const result = await mergeCart(getGuestId())
+    if (result.merged > 0) notify('Os itens do seu carrinho foram mantidos.', 'success')
+  } catch {
+    // o carrinho do visitante continua guardado no servidor
+  }
+  void queryClient.invalidateQueries({ queryKey: ['cart'] })
+}
 
 /** Descarta tudo o que é da sessão anterior: caches, requisições em voo e o socket. */
 export function resetSessionState() {
@@ -23,6 +36,7 @@ export function startSession({ token, user }: AuthResponse) {
   resetSessionState()
   setToken(token)
   queryClient.setQueryData(['session'], user)
+  void mergeGuestCart()
 }
 
 export async function signOut() {
@@ -62,3 +76,4 @@ export function installSessionExpiry(router: AnyRouter) {
     }
   })
 }
+

@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Heart, House, ScanLine, ShoppingCart, User } from 'lucide-react'
 import { useSession } from '@/lib/auth'
+import { useCart } from '@/features/cart/useCart'
 
 const items = [
   { id: 'home', label: 'Início', icon: House, filled: true },
@@ -20,7 +21,8 @@ function focusSearch() {
 
 export function BottomNav() {
   const { user } = useSession()
-
+  const { data: cart } = useCart()
+  const count = cart?.itemCount ?? 0
   return (
     <div
       className="fixed inset-x-0 bottom-0 z-40 h-[94.95px]"
@@ -43,6 +45,15 @@ export function BottomNav() {
                   <Link to="/" aria-label={item.label} aria-current="page" className="-m-3 flex p-3 text-primary">
                     {icon}
                   </Link>
+                ) : item.id === 'cart' ? (
+                  <Link to="/carrinho" aria-label={count ? `Carrinho, ${count} itens` : 'Carrinho'} className="relative -m-3 flex p-3 text-muted-foreground">
+                    {icon}
+                    {count > 0 && (
+                      <span aria-hidden="true" className="absolute right-0 top-0 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                        {count}
+                      </span>
+                    )}
+                  </Link>
                 ) : item.id === 'profile' ? (
                   <Link to={user ? '/perfil' : '/login'} aria-label={user ? 'Perfil' : 'Entrar'} className="-m-3 flex p-3 text-muted-foreground">
                     {icon}
@@ -52,7 +63,7 @@ export function BottomNav() {
                     {icon}
                   </button>
                 )}
-              </Fragment>
+              </Fragment> 
             )
           })}
         </ul>

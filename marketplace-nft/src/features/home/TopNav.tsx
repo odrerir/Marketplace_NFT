@@ -60,7 +60,7 @@ export function TopNav({ q, onSearch }: { q?: string; onSearch: (q?: string) => 
           <button type="button" disabled aria-label="Carrinho">
             <ShoppingCart className="size-6" />
           </button>
-          <button type="button" disabled className="flex items-center gap-2 rounded-[8px] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground opacity-60">
+          <button type="button" disabled className="flex items-center gap-2 rounded-[8px] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">
             <LogIn className="size-4" aria-hidden="true" /> Entrar
           </button>
         </div>

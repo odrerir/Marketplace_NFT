@@ -2,6 +2,7 @@ import { http, HttpResponse, delay } from 'msw'
 import { db } from './db'
 import { queryNfts } from './queries'
 import type { ApiError, ListNftsParams } from '@/types/api'
+import { realtimeHandlers } from './realtime'
 
 const num = (v: string | null) => (v ? Number(v) : undefined)
 
@@ -19,7 +20,7 @@ function parseListParams(sp: URLSearchParams): ListNftsParams {
   }
 }
 
-export const handlers = [
+export const handlers = [ 
   http.get('/api/nfts', async ({ request }) => {
     const params = parseListParams(new URL(request.url).searchParams)
     await delay(400)
@@ -35,4 +36,5 @@ export const handlers = [
     }
     return HttpResponse.json(nft)
   }),
+  ...realtimeHandlers,
 ]

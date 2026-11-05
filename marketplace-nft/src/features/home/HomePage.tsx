@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { getRouteApi } from '@tanstack/react-router'
 import { Search, SlidersHorizontal } from 'lucide-react'
@@ -14,6 +14,7 @@ import { Pagination } from './Pagination'
 import type { HomeSearch } from './search'
 import { SortSelect } from './SortSelect'
 import { TopNav } from './TopNav'
+import { SearchInput } from './searchInput'
 
 const route = getRouteApi('/')
 // 36 NFTs / 9 = 4 páginas, igual à paginação do Figma desktop
@@ -36,37 +37,14 @@ function SearchRow({ q, onSearch, onOpenFilters }: {
   onSearch: (q?: string) => void
   onOpenFilters: () => void
 }) {
-  const [value, setValue] = useState(q ?? '')
-  const pushed = useRef(q ?? '')
-
-  // A URL mudou por fora (voltar/avançar do navegador): atualiza o campo
-  useEffect(() => {
-    if ((q ?? '') !== pushed.current) {
-      pushed.current = q ?? ''
-      setValue(q ?? '')
-    }
-  }, [q])
-
-  // Só escreve na URL depois de 300 ms sem digitar
-  useEffect(() => {
-    const next = value.trim()
-    if (next === pushed.current) return
-    const id = setTimeout(() => {
-      pushed.current = next
-      onSearch(next || undefined)
-    }, 300)
-    return () => clearTimeout(id)
-  }, [value, onSearch])
-
   return (
-    <div className="flex gap-2 lg:max-w-md">
+    <div className="flex gap-2 lg:hidden">
       <form role="search" className="relative flex-1" onSubmit={(e) => e.preventDefault()}>
         <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-[11.5px] size-[22px] text-muted-foreground" />
-        <input
+        <SearchInput
           id="busca"
-          type="search"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          q={q}
+          onSearch={onSearch}
           placeholder="Explorar coleções"
           aria-label="Buscar NFTs"
           className="h-[45px] w-full rounded-[10px] bg-card pl-[42px] pr-3 text-[15px] font-medium text-foreground placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-primary"
@@ -76,7 +54,7 @@ function SearchRow({ q, onSearch, onOpenFilters }: {
         type="button"
         onClick={onOpenFilters}
         aria-label="Abrir filtros"
-        className="flex size-[45px] shrink-0 items-center justify-center rounded-[14px] bg-gradient-filter text-primary-foreground lg:hidden"
+        className="flex size-[45px] shrink-0 items-center justify-center rounded-[14px] bg-gradient-filter text-primary-foreground"
       >
         <SlidersHorizontal className="size-[22px]" />
       </button>
@@ -115,6 +93,7 @@ export function HomePage() {
   const goToPage = (p: number) =>
     navigate({ search: (prev) => ({ ...prev, page: p > 1 ? p : undefined }) })
   const reset = () => navigate({ search: {} })
+  const onSearch = (q?: string) => changeFilter({ q }, true)
 
   const sortControl = (className?: string) => (
     <SortSelect
@@ -126,13 +105,9 @@ export function HomePage() {
 
   return (
     <>
-      <TopNav />
-      <main className="mx-auto w-full max-w-[1200px] px-6 pb-[calc(94.95px+2rem)] pt-6 lg:pb-16">
-        <SearchRow
-          q={search.q}
-          onSearch={(q) => changeFilter({ q }, true)}
-          onOpenFilters={() => setFiltersOpen(true)}
-        />
+      <TopNav q={search.q} onSearch={onSearch} />
+      <main className="mx-auto w-full max-w-[1248px] px-6 pb-[calc(94.95px+2rem)] pt-6 lg:pb-16">
+        <SearchRow q={search.q} onSearch={onSearch} onOpenFilters={() => setFiltersOpen(true)} />
         <HeroBanner />
 
         <div className="mt-8 lg:grid lg:grid-cols-[310px_1fr] lg:gap-[50px]">

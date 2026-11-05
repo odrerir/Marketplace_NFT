@@ -3,6 +3,7 @@ import { db } from './db'
 import { queryNfts } from './queries'
 import type { ApiError, ListNftsParams } from '@/types/api'
 import { realtimeHandlers } from './realtime'
+import { authHandlers } from './authHandlers'
 
 const num = (v: string | null) => (v ? Number(v) : undefined)
 
@@ -37,4 +38,5 @@ export const handlers = [
     return HttpResponse.json(nft)
   }),
   ...realtimeHandlers,
+  ...authHandlers,
 ]

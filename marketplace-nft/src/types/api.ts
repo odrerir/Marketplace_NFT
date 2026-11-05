@@ -77,9 +77,39 @@ export type ApiErrorCode =
   | 'NOT_FOUND'
   | 'CONFLICT'
   | 'TRANSIENT'
+  | 'INVALID_CREDENTIALS'
 
 export interface ApiError {
   code: ApiErrorCode
   message: string
   fieldErrors?: Record<string, string>
+}
+
+export interface User {
+  id: string
+  username: string
+  displayName: string
+  email: string
+}
+
+export interface LoginRequest {
+  email: string
+  password: string
+}
+
+export interface RegisterRequest {
+  username: string
+  email: string
+  password: string
+}
+
+export interface AuthResponse {
+  token: string
+  user: User
+  expiresAt: string
+}
+
+export interface SessionResponse {
+  user: User
+  expiresAt: string
 }

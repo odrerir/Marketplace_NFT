@@ -1,12 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { installSessionExpiry } from './lib/auth'
+import { queryClient } from './lib/query-client'
 import { routeTree } from './routeTree.gen'
 import './index.css'
 
-const queryClient = new QueryClient()
-const router = createRouter({ routeTree })
+const router = createRouter({ routeTree, context: { queryClient } })
+installSessionExpiry(router)
 
 declare module '@tanstack/react-router' {
   interface Register {

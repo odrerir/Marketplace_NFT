@@ -19,8 +19,8 @@ Solução do desafio frontend "Marketplace de NFTs", feita com React e TypeScrip
 | Estilização | Tailwind CSS v4 |
 | Componentes | shadcn/ui (Base UI) |
 | Mocking | MSW + `@mswjs/socket.io-binding` |
-| Testes E2E | Não configurados |
-| Auditoria | Não configurada |
+| Testes E2E | Playwright |
+| Auditoria | Lighthouse |
 
 Ferramentas complementares: Vite (build), oxlint (lint) e Lucide (ícones).
 
@@ -155,5 +155,5 @@ A aplicação é publicada na Vercel a partir da branch `main`. O `vercel.json` 
 | Pagamento, pedidos idempotentes e confirmação | Concluído |
 | Eventos `nft.updated` e `order.updated` | Concluído |
 | Perfil | Concluído |
-| Testes Playwright | Pendente |
-| Lighthouse | Pendente |
+| Testes Playwright | Concluído |
+| Lighthouse | Concluído |

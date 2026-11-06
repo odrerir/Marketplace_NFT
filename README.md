@@ -158,5 +158,5 @@ A aplicação é publicada na Vercel a partir da branch `main`. O `vercel.json` 
 | Pagamento, pedidos idempotentes e confirmação | Concluído |
 | Eventos `nft.updated` e `order.updated` | Concluído |
 | Perfil | Concluído |
-| Testes Playwright | Pendente |
-| Lighthouse | Pendente |
+| Testes Playwright | Concluído |
+| Lighthouse | Concluído |

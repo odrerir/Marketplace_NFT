@@ -1,0 +1,127 @@
+{
+  "planHash": "18dd601ea8d1af7d0991aaba3471118ac20dcd453d969831cc911c700906813c",
+  "phase": "standalone",
+  "recordedAtUtc": "2026-11-06T00:27:29.4188321Z",
+  "retryCount": 1,
+  "resetBaseline": false,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 45623,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "build",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E marketplace-nft@0.0.0 build\r\n\u003E tsc -b \u0026\u0026 vite build\r\n\r\n\u001B[33m(!) Your Vite config uses features that are unsupported by \u0060configLoader: \u0027native\u0027\u0060, which is planned to become the default in a future major version of Vite:\r\n  - \u0060__dirname\u0060 (vite.config.ts:14:41). Use \u0060import.meta.dirname\u0060 instead\r\nSet \u0060VITE_CONFIG_NATIVE_IGNORE_WARNING=true\u0060 to suppress this warning.\u001B[39m\r\n\u001B[36mvite v8.3.6 \u001B[32mbuilding client environment for production...\u001B[36m\u001B[39m\r\ntransforming...\r\n\u2713 2747 modules transformed.\r\nrendering chunks...\r\ncomputing gzip size...\r\ndist/index.html                                                    1.10 kB \u2502 gzip:   0.44 kB\r\ndist/assets/roboto-mono-vietnamese-wght-normal-DlC-zuDL.woff2     10.30 kB\r\ndist/assets/roboto-mono-greek-wght-normal-BJJTbwTT.woff2          14.04 kB\r\ndist/assets/roboto-mono-cyrillic-wght-normal-HUlVHixE.woff2       18.59 kB\r\ndist/assets/roboto-mono-latin-ext-wght-normal-QAYlOegK.woff2      22.91 kB\r\ndist/assets/roboto-mono-latin-wght-normal-CZtBPCCa.woff2          32.79 kB\r\ndist/assets/roboto-mono-cyrillic-ext-wght-normal-BUDPrIko.woff2   35.91 kB\r\ndist/assets/index-DfW6GMBf.css                                    43.97 kB \u2502 gzip:   8.95 kB\r\ndist/assets/realtime-D1rVxkLe.js                                   0.04 kB \u2502 gzip:   0.06 kB\r\ndist/assets/_authed-BOjYU8qw.js                                    0.07 kB \u2502 gzip:   0.08 kB\r\ndist/assets/arrow-left-DT1dIYlI.js                                 0.19 kB \u2502 gzip:   0.18 kB\r\ndist/assets/useNavigate-dOtkbTVG.js                                0.23 kB \u2502 gzip:   0.19 kB\r\ndist/assets/plus-DlluLKMf.js                                       0.27 kB \u2502 gzip:   0.18 kB\r\ndist/assets/heart-RyXtOipX.js                                      0.28 kB \u2502 gzip:   0.23 kB\r\ndist/assets/eth-RtSLvouu.js                                        0.32 kB \u2502 gzip:   0.25 kB\r\ndist/assets/labels-C5pHEU2T.js                                     0.38 kB \u2502 gzip:   0.25 kB\r\ndist/assets/rolldown-runtime-XKyaHtl9.js                           0.72 kB \u2502 gzip:   0.42 kB\r\ndist/assets/validators-Ozf1NAXP.js                                 0.79 kB \u2502 gzip:   0.46 kB\r\ndist/assets/format-C8hsCW2b.js                                     0.87 kB \u2502 gzip:   0.47 kB\r\ndist/assets/guards-Cm9Jjugn.js                                     0.93 kB \u2502 gzip:   0.55 kB\r\ndist/assets/perfil-CRI2Jx86.js                                     0.98 kB \u2502 gzip:   0.50 kB\r\ndist/assets/NftCard-Bkmm_64u.js                                    1.38 kB \u2502 gzip:   0.63 kB\r\ndist/assets/login-DGDjcuJB.js                                      1.80 kB \u2502 gzip:   0.95 kB\r\ndist/assets/useSelector-DK5Okg5v.js                                1.94 kB \u2502 gzip:   0.85 kB\r\ndist/assets/Field-BZXf_-H9.js                                      2.07 kB \u2502 gzip:   1.01 kB\r\ndist/assets/cadastro-DXAVmM_y.js                                   2.12 kB \u2502 gzip:   1.04 kB\r\ndist/assets/AuthShell-JZrAY6b9.js                                  2.16 kB \u2502 gzip:   0.90 kB\r\ndist/assets/errors-CX7of61i.js                                     2.60 kB \u2502 gzip:   1.11 kB\r\ndist/assets/BottomNav-BnSeO74X.js                                  2.95 kB \u2502 gzip:   1.38 kB\r\ndist/assets/Footer-7YQqdB7y.js                                     3.56 kB \u2502 gzip:   1.43 kB\r\ndist/assets/route-paIPkEdQ.js                                      4.27 kB \u2502 gzip:   1.38 kB\r\ndist/assets/TopNav-oKEyDRrC.js                                     4.66 kB \u2502 gzip:   1.99 kB\r\ndist/assets/pedido._id-CsO-mLNd.js                                 7.10 kB \u2502 gzip:   2.30 kB\r\ndist/assets/carrinho-D57P0sdk.js                                   8.31 kB \u2502 gzip:   2.64 kB\r\ndist/assets/esm-B6DvIUmM.js                                       10.52 kB \u2502 gzip:   3.82 kB\r\ndist/assets/pagamento-CDJ-NO8_.js                                 11.47 kB \u2502 gzip:   3.98 kB\r\ndist/assets/nft._id-CK7w9XO9.js                                   13.98 kB \u2502 gzip:   4.80 kB\r\ndist/assets/esm-BYTyMHpT.js                                       30.75 kB \u2502 gzip:   9.55 kB\r\ndist/assets/matchContext-BfsETinS.js                              63.71 kB \u2502 gzip:  22\n\u2026[truncated]",
+        "durationMs": 3271
+      },
+      {
+        "name": "dev-server-home-200",
+        "kind": "http-probe",
+        "verificationMethod": "http-status",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "HTTP 200\n\u003C!doctype html\u003E\n\u003Chtml lang=\u0022en\u0022\u003E\n  \u003Chead\u003E\n    \u003Cscript type=\u0022module\u0022\u003Eimport { injectIntoGlobalHook } from \u0022/@react-refresh\u0022;\ninjectIntoGlobalHook(window);\nwindow.$RefreshReg$ = () =\u003E {};\nwindow.$RefreshSig$ = () =\u003E (type) =\u003E type;\u003C/script\u003E\n\n    \u003Cscript type=\u0022module\u0022 src=\u0022/@vite/client\u0022\u003E\u003C/script\u003E\n\n    \u003Cmeta charset=\u0022UTF-8\u0022 /\u003E\n    \u003Clink rel=\u0022icon\u0022 type=\u0022image/svg\u002Bxml\u0022 href=\u0022/favicon.svg\u0022 /\u003E\n    \u003Cmeta name=\u0022viewport\u0022 content=\u0022width=device-width, initial-scale=1.0\u0022 /\u003E\n    \u003Ctitle\u003Emarketplace-nft\u003C/title\u003E\n  \u003C/head\u003E\n  \u003Cbody\u003E\n    \u003Cdiv id=\u0022root\u0022\u003E\u003C/div\u003E\n    \u003Cscript type=\u0022module\u0022 src=\u0022/src/main.tsx?t=1793924842499\u0022\u003E\u003C/script\u003E\n  \u003C/body\u003E\n\u003C/html\u003E\n",
+        "durationMs": 33
+      },
+      {
+        "name": "tests-pass",
+        "kind": "process",
+        "verificationMethod": "test-results",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E marketplace-nft@0.0.0 test\r\n\u003E vitest run\r\n\r\n\u001B[33m(!) Your Vite config uses features that are unsupported by \u0060configLoader: \u0027native\u0027\u0060, which is planned to become the default in a future major version of Vite:\r\n  - \u0060__dirname\u0060 (vite.config.ts:14:41). Use \u0060import.meta.dirname\u0060 instead\r\nSet \u0060VITE_CONFIG_NATIVE_IGNORE_WARNING=true\u0060 to suppress this warning.\u001B[39m\r\n\r\n RUN  v4.1.12 C:/Users/DELL/Documents/GitHub/Marketplace_NFT/marketplace-nft\r\n\r\n\r\n Test Files  1 passed (1)\r\n      Tests  3 passed (3)\r\n   Start at  21:27:28\r\n   Duration  706ms (transform 73ms, setup 0ms, import 544ms, tests 2ms, environment 0ms)\r\n\r\n",
+        "durationMs": 2079,
+        "testResults": {
+          "testFramework": "vitest",
+          "runnerDetectedFrom": "package_json",
+          "testsTotal": 3,
+          "testsPassed": 3,
+          "testsFailed": 0,
+          "testsSkipped": 0,
+          "parseFailed": false
+        }
+      }
+    ],
+    "executions": [
+      {
+        "source": "setup[0]",
+        "resolvedExecutable": "C:\\nvm4w\\nodejs\\npm.CMD",
+        "args": [
+          "install",
+          "--no-package-lock"
+        ],
+        "cwd": "C:\\Users\\DELL\\Documents\\GitHub\\Marketplace_NFT\\marketplace-nft",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "devServer",
+        "resolvedExecutable": "C:\\nvm4w\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "dev",
+          "--",
+          "--host",
+          "127.0.0.1"
+        ],
+        "cwd": "C:\\Users\\DELL\\Documents\\GitHub\\Marketplace_NFT\\marketplace-nft",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "build",
+        "resolvedExecutable": "C:\\nvm4w\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "build"
+        ],
+        "cwd": "C:\\Users\\DELL\\Documents\\GitHub\\Marketplace_NFT\\marketplace-nft",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "dev-server-home-200",
+        "resolvedExecutable": "C:\\nvm4w\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "dev",
+          "--",
+          "--host",
+          "127.0.0.1"
+        ],
+        "cwd": "C:\\Users\\DELL\\Documents\\GitHub\\Marketplace_NFT\\marketplace-nft",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "tests-pass",
+        "resolvedExecutable": "C:\\nvm4w\\nodejs\\npm.CMD",
+        "args": [
+          "test"
+        ],
+        "cwd": "C:\\Users\\DELL\\Documents\\GitHub\\Marketplace_NFT\\marketplace-nft",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}

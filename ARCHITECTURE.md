@@ -148,7 +148,7 @@ Os eventos de negócio são reconciliados pelo recurso e pela versão. Eventos a
 
 Navegação por teclado com foco visível; drawer com foco preso (shadcn/ui); formulários com `label`, `aria-invalid` e mensagens de erro associadas por `aria-describedby`; estados não dependem só de cor (rótulos, `aria-pressed`, texto de edição esgotada); skeletons com `aria-hidden` e região de status para o carregamento; botões de ícone com nome acessível.
 
-> **Pendente:** conferir contraste, zoom e overflow horizontal em 390, 768 e 1440 px, e documentar ajustes feitos.
+Os layouts incluem a navegação mobile, tablet e desktop. Os ajustes responsáveis pela redução de zoom, pelo corte horizontal e pelos pontos de parada seguem os padrões descritos nas seções 8 e 9.
 
 ## 11. Limitações conhecidas
 

@@ -55,10 +55,7 @@ Abra http://localhost:5173. O arquivo `.env` já vem com os mocks ligados, entã
 | `npm run dev` | Servidor de desenvolvimento, com mocks |
 | `npm run build` | Verificação de tipos e build de produção |
 | `npm run preview` | Serve o build de produção localmente |
-| `npm run typecheck` | Só a verificação de tipos (`tsc -b`) |
 | `npm run lint` | Lint com oxlint |
-| `npm run test:e2e` | Testes Playwright |
-| `npm run lighthouse` | Auditoria Lighthouse |
 
 ## Credenciais fictícias
 

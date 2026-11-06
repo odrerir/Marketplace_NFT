@@ -24,6 +24,24 @@ interface OrderUpdated {
   order: Order
 }
 
+export function isVersionNewer(incoming: number, current: number) {
+  return incoming > current
+}
+
+export function isOrderEventForUser(
+  event: OrderUpdated,
+  sessionUser: { id: string } | undefined,
+  orderId: string,
+) {
+  return Boolean(
+    sessionUser &&
+    event.resource === 'order' &&
+    event.userId === sessionUser.id &&
+    event.orderId === orderId &&
+    event.order.id === orderId,
+  )
+}
+
 const nftVersions = new Map<string, number>()
 const orderVersions = new Map<string, number>()
 const appliedEvents = new Set<string>()
@@ -56,7 +74,7 @@ function applyNft(nft: Nft) {
 
 function applyOrder(order: Order) {
   const previous = orderVersions.get(order.id) ?? 0
-  if (order.version <= previous) return
+  if (!isVersionNewer(order.version, previous)) return
   orderVersions.set(order.id, order.version)
 
   const sessionUser = queryClient.getQueryData<{ id: string }>(['session'])
@@ -109,12 +127,7 @@ export function RealtimeClient() {
         if (appliedEvents.has(event.eventId)) return
         appliedEvents.add(event.eventId)
         const sessionUser = queryClient.getQueryData<{ id: string }>(['session'])
-        if (
-          sessionUser &&
-          event.resource === 'order' &&
-          event.userId === sessionUser.id &&
-          event.orderId === event.order.id
-        ) {
+        if (isOrderEventForUser(event, sessionUser, event.order.id)) {
           applyOrder(event.order)
         }
       }

@@ -9,6 +9,7 @@ import { disconnectSocket } from './socket'
 import type { AuthResponse } from '@/types/api'
 import { mergeCart } from '@/api/cart'
 import { getGuestId } from './guest'
+import { clearAttempt } from './checkout-attempt'
 
 const notSession = (q: Query) => q.queryKey[0] !== 'session'
 
@@ -29,6 +30,7 @@ export function resetSessionState() {
   queryClient.removeQueries({ predicate: notSession })
   queryClient.setQueryData(['session'], null)
   disconnectSocket()
+  clearAttempt()
 }
 
 /** Login e cadastro. Limpar antes cobre também a troca direta de usuário. */

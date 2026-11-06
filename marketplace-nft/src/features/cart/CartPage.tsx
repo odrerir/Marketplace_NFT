@@ -109,10 +109,18 @@ function Summary({ cart }: { cart: CartResponse }) {
         <p className="text-right text-xs text-primary">Taxa estimada</p>
         <div className="flex justify-between border-t border-border pt-3 text-base font-bold"><dt>Total</dt><dd className="text-primary">{cart.total} ETH</dd></div>
       </dl>
-      {/* O pagamento é ligado na branch feat/checkout */}
-      <button type="button" disabled className="h-12 w-full rounded-[8px] bg-primary font-bold text-primary-foreground disabled:opacity-60">
-        Conectar e finalizar
-      </button>
+      {cart.hasIssues ? (
+        <>
+          <button type="button" disabled className="h-12 w-full rounded-[8px] bg-primary font-bold text-primary-foreground opacity-60">
+            Conectar e finalizar
+          </button>
+          <p role="alert" className="text-xs text-coral">Resolva os itens indisponíveis para continuar.</p>
+        </>
+      ) : (
+        <Link to="/pagamento" className="flex h-12 w-full items-center justify-center rounded-[8px] bg-primary font-bold text-primary-foreground">
+          Conectar e finalizar
+        </Link>
+      )}
       <Link to="/" className="block text-center text-sm text-primary">Continuar explorando</Link>
     </aside>
   )

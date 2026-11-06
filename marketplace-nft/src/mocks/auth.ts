@@ -1,7 +1,7 @@
 import { HttpResponse } from 'msw'
 import { db } from './db'
 import type { StoredUser } from './db'
-import type { ApiError, ApiErrorCode, User } from '@/types/api'
+import type { ApiErrorCode, User } from '@/types/api'
 
 export const SESSION_TTL_MS = 30 * 60_000
 
@@ -18,9 +18,9 @@ export function apiError(
   code: ApiErrorCode,
   message: string,
   fieldErrors?: Record<string, string>,
+  extra?: Record<string, unknown>,
 ) {
-  const body: ApiError = { code, message, fieldErrors }
-  return HttpResponse.json(body, { status })
+  return HttpResponse.json({ code, message, fieldErrors, ...extra }, { status })
 }
 
 export function toUser(u: StoredUser): User {

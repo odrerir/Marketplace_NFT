@@ -14,8 +14,10 @@ import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthedPagamentoRouteImport } from './routes/_authed/pagamento'
 import { Route as AuthedPerfilRouteImport } from './routes/_authed/perfil'
 import { Route as NftIdRouteImport } from './routes/nft.$id'
+import { Route as AuthedPedidoIdRouteImport } from './routes/_authed/pedido.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -41,6 +43,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthedPagamentoRoute = AuthedPagamentoRouteImport.update({
+  id: '/pagamento',
+  path: '/pagamento',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedPerfilRoute = AuthedPerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
@@ -51,22 +58,31 @@ const NftIdRoute = NftIdRouteImport.update({
   path: '/nft/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthedPedidoIdRoute = AuthedPedidoIdRouteImport.update({
+  id: '/pedido/$id',
+  path: '/pedido/$id',
+  getParentRoute: () => AuthedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/carrinho': typeof CarrinhoRoute
   '/login': typeof LoginRoute
+  '/pagamento': typeof AuthedPagamentoRoute
   '/perfil': typeof AuthedPerfilRoute
   '/nft/$id': typeof NftIdRoute
+  '/pedido/$id': typeof AuthedPedidoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/carrinho': typeof CarrinhoRoute
   '/login': typeof LoginRoute
+  '/pagamento': typeof AuthedPagamentoRoute
   '/perfil': typeof AuthedPerfilRoute
   '/nft/$id': typeof NftIdRoute
+  '/pedido/$id': typeof AuthedPedidoIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -75,14 +91,32 @@ export interface FileRoutesById {
   '/cadastro': typeof CadastroRoute
   '/carrinho': typeof CarrinhoRoute
   '/login': typeof LoginRoute
+  '/_authed/pagamento': typeof AuthedPagamentoRoute
   '/_authed/perfil': typeof AuthedPerfilRoute
   '/nft/$id': typeof NftIdRoute
+  '/_authed/pedido/$id': typeof AuthedPedidoIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cadastro' | '/carrinho' | '/login' | '/perfil' | '/nft/$id'
+  fullPaths:
+    | '/'
+    | '/cadastro'
+    | '/carrinho'
+    | '/login'
+    | '/pagamento'
+    | '/perfil'
+    | '/nft/$id'
+    | '/pedido/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cadastro' | '/carrinho' | '/login' | '/perfil' | '/nft/$id'
+  to:
+    | '/'
+    | '/cadastro'
+    | '/carrinho'
+    | '/login'
+    | '/pagamento'
+    | '/perfil'
+    | '/nft/$id'
+    | '/pedido/$id'
   id:
     | '__root__'
     | '/'
@@ -90,8 +124,10 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/carrinho'
     | '/login'
+    | '/_authed/pagamento'
     | '/_authed/perfil'
     | '/nft/$id'
+    | '/_authed/pedido/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -140,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authed/pagamento': {
+      id: '/_authed/pagamento'
+      path: '/pagamento'
+      fullPath: '/pagamento'
+      preLoaderRoute: typeof AuthedPagamentoRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/perfil': {
       id: '/_authed/perfil'
       path: '/perfil'
@@ -154,15 +197,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NftIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authed/pedido/$id': {
+      id: '/_authed/pedido/$id'
+      path: '/pedido/$id'
+      fullPath: '/pedido/$id'
+      preLoaderRoute: typeof AuthedPedidoIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
   }
 }
 
 interface AuthedRouteChildren {
+  AuthedPagamentoRoute: typeof AuthedPagamentoRoute
   AuthedPerfilRoute: typeof AuthedPerfilRoute
+  AuthedPedidoIdRoute: typeof AuthedPedidoIdRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedPagamentoRoute: AuthedPagamentoRoute,
   AuthedPerfilRoute: AuthedPerfilRoute,
+  AuthedPedidoIdRoute: AuthedPedidoIdRoute,
 }
 
 const AuthedRouteWithChildren =

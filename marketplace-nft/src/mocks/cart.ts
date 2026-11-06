@@ -2,6 +2,7 @@ import { db } from './db'
 import { apiError, authenticate, bearerToken } from './auth'
 import { fromWei, toWei } from '@/lib/eth'
 import type { CartLine, CartResponse } from '@/types/api'
+import { settleDueOrders } from './orders'
 
 export const NETWORK_FEE = '0.016'
 
@@ -23,8 +24,10 @@ export function resolveOwner(request: Request): { ownerId: string } | { error: R
   if (bearerToken(request)) {
     const auth = authenticate(request)
     if ('error' in auth) return { error: auth.error }
+    settleDueOrders(auth.user.id)
     return { ownerId: `user:${auth.user.id}` }
   }
+  
   const guest = request.headers.get('X-Guest-Id') ?? ''
   if (/^[\w-]{8,64}$/.test(guest)) return { ownerId: `guest:${guest}` }
   return { error: apiError(400, 'VALIDATION_ERROR', 'Carrinho de visitante sem identificação.') }

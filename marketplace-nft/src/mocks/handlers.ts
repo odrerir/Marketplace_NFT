@@ -6,6 +6,8 @@ import { realtimeHandlers } from './realtime'
 import { authHandlers } from './authHandlers'
 import { favoritesHandlers } from './favoritesHandlers'
 import { cartHandlers } from './cartHandlers'
+import { walletHandlers } from './walletHandlers'
+import { orderHandlers } from './orderHandlers'
 
 const num = (v: string | null) => (v ? Number(v) : undefined)
 
@@ -43,4 +45,6 @@ export const handlers = [
   ...authHandlers,
   ...favoritesHandlers,
   ...cartHandlers,
+  ...walletHandlers,
+  ...orderHandlers,
 ]

@@ -78,11 +78,13 @@ export type ApiErrorCode =
   | 'CONFLICT'
   | 'TRANSIENT'
   | 'INVALID_CREDENTIALS'
+  | 'QUOTE_CHANGED'
 
 export interface ApiError {
   code: ApiErrorCode
   message: string
   fieldErrors?: Record<string, string>
+  cart?: CartResponse
 }
 
 export interface User {
@@ -160,4 +162,77 @@ export interface AddCartItemRequest {
   nftId: string
   editionId: string
   quantity: number
+}
+
+export type WalletProvider = 'metamask' | 'walletconnect' | 'coinbase'
+export type WalletKind = 'primary' | 'secondary'
+
+export interface Wallet {
+  id: string
+  kind: WalletKind
+  nickname: string
+  network: NftNetwork
+  address: string
+}
+
+export interface WalletInput {
+  kind: WalletKind
+  nickname: string
+  network: NftNetwork
+  address: string
+}
+
+export interface WalletConnection {
+  id: string
+  walletId: string
+  provider: WalletProvider
+  connectedAt: string
+}
+
+export type OrderStatus = 'pending' | 'confirmed' | 'refused'
+
+export interface OrderItem {
+  nftId: string
+  name: string
+  tokenId: string
+  image: string
+  editionLabel: string
+  unitPrice: EthAmount
+  quantity: number
+  lineTotal: EthAmount
+}
+
+export interface OrderCollector {
+  displayName: string
+  email: string
+  note?: string
+}
+
+export interface Order {
+  id: string
+  status: OrderStatus
+  items: OrderItem[]
+  couponCode?: string
+  subtotal: EthAmount
+  discount: EthAmount
+  networkFee: EthAmount
+  total: EthAmount
+  network: NftNetwork
+  walletProvider: WalletProvider
+  walletNickname: string
+  walletAddress: string
+  collector: OrderCollector
+  transactionId?: string
+  refusalReason?: string
+  createdAt: string
+  updatedAt: string
+  /** Aumenta a cada mudança de estado (o tempo real usa para ignorar eventos antigos). */
+  version: number
+}
+
+export interface CreateOrderRequest {
+  quoteId: string
+  walletId: string
+  connectionId: string
+  collector: OrderCollector
 }

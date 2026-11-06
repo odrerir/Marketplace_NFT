@@ -3,6 +3,7 @@ import { handlers } from './handlers'
 import { db } from './db'
 import { clearFailures, setFailure, setOption } from './scenarios'
 import type { FailureMode } from './scenarios'
+import { emitNftUpdated } from './realtime'
 
 export const worker = setupWorker(...handlers)
 
@@ -42,6 +43,7 @@ Object.assign(window, {
           if (edition) edition.available = patch.available
         }
         nft.version += 1
+        emitNftUpdated(nft)
       }),
     /** Simula a carteira desconectando por conta própria. */
     disconnectWallet: () =>

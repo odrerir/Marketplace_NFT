@@ -6,8 +6,6 @@ Solução do desafio frontend "Marketplace de NFTs", feita com React e TypeScrip
 - **Repositório:** https://github.com/odrerir/Marketplace_NFT
 - **Decisões, contratos e limitações:** veja [ARCHITECTURE.md](./ARCHITECTURE.md)
 
-> **Pendente (atualizar antes de entregar):** a seção "Status" no fim deste arquivo e as linhas marcadas como pendentes.
-
 ## Stack
 
 | Responsabilidade | Tecnologia |
@@ -21,8 +19,8 @@ Solução do desafio frontend "Marketplace de NFTs", feita com React e TypeScrip
 | Estilização | Tailwind CSS v4 |
 | Componentes | shadcn/ui (Base UI) |
 | Mocking | MSW + `@mswjs/socket.io-binding` |
-| Testes E2E | Playwright (pendente) |
-| Auditoria | Lighthouse (pendente) |
+| Testes E2E | Playwright |
+| Auditoria | Lighthouse |
 
 Ferramentas complementares: Vite (build), oxlint (lint) e Lucide (ícones).
 
@@ -59,10 +57,8 @@ Abra http://localhost:5173. O arquivo `.env` já vem com os mocks ligados, entã
 | `npm run preview` | Serve o build de produção localmente |
 | `npm run typecheck` | Só a verificação de tipos (`tsc -b`) |
 | `npm run lint` | Lint com oxlint |
-| `npm run test:e2e` | Testes Playwright (**pendente**) |
-| `npm run lighthouse` | Auditoria Lighthouse (**pendente**) |
-
-> **Pendente:** conferir no `package.json` que os scripts `typecheck`, `test:e2e` e `lighthouse` existem, e ajustar a tabela.
+| `npm run test:e2e` | Testes Playwright |
+| `npm run lighthouse` | Auditoria Lighthouse |
 
 ## Credenciais fictícias
 
@@ -75,7 +71,7 @@ Também é possível criar uma conta nova em `/cadastro`. As senhas ficam guarda
 
 ## Cenários, reset e falhas
 
-Os dados simulados ficam no `localStorage` (chave `kurio-mock-db:v3`), então sobrevivem a um refresh. Com a aplicação aberta, o console do navegador oferece:
+Os dados simulados ficam no `localStorage` (chave `kurio-mock-db:v5`), então sobrevivem a um refresh. Com a aplicação aberta, o console do navegador oferece:
 
 ```js
 __kurioMock.resetDb()                      // restaura o cenário conhecido (dados e falhas)
@@ -84,6 +80,23 @@ __kurioMock.setFailure('favorites', 'http500')   // falha HTTP 500 no grupo
 __kurioMock.setFailure('favorites', 'network')   // queda de conexão no grupo
 __kurioMock.setFailure('favorites', 'none')      // volta ao normal
 __kurioMock.clearFailures()                // remove todas as falhas
+```
+
+### Falhas e opções adicionais
+
+```js
+__kurioMock.setFailure('cart', 'http500')
+__kurioMock.setFailure('wallets', 'network')
+__kurioMock.setFailure('orders', 'none')
+
+__kurioMock.setOption('payment', 'confirm')
+__kurioMock.setOption('payment', 'refuse')
+__kurioMock.setOption('payment', 'timeout')
+__kurioMock.setOption('wallet', 'ok')
+__kurioMock.setOption('wallet', 'refuse')
+
+__kurioMock.changeNft('nft-001', { price: '1.50' })
+__kurioMock.disconnectWallet()
 ```
 
 Para colar código no console do Chrome, digite antes `allow pasting`.
@@ -104,8 +117,16 @@ Para colar código no console do Chrome, digite antes `allow pasting`.
 | Validação de formulário | Envie login e cadastro vazios ou com dados inválidos |
 | Rota privada sem login | Deslogado, abra `/perfil` |
 | Rota inexistente | Abra `/qualquer-coisa` |
-
-> **Pendente:** adicionar aqui os cenários de carrinho, cupom, pedido (timeout, recusa, preço alterado) e tempo real, quando forem implementados.
+| Falha no carrinho | Execute `setFailure('cart', 'http500')` e altere o carrinho |
+| Falha ou queda da rede do carrinho | Execute `setFailure('cart', 'network')` ou troque para `http500` |
+| Falha no cadastro de carteira | Execute `setFailure('wallets', 'http500')` |
+| Conexão de carteira recusada | Execute `setOption('wallet', 'refuse')` |
+| Conexão de carteira bem-sucedida | Execute `setOption('wallet', 'ok')` |
+| Pagamento confirmado | Execute `setOption('payment', 'confirm')` e finalize o pedido |
+| Pagamento recusado | Execute `setOption('payment', 'refuse')` e finalize o pedido |
+| Timeout do pagamento | Execute `setOption('payment', 'timeout')` e finalize o pedido |
+| Cotação alterada | Altere um NFT ou seu carrinho e tente pagar com uma cotação antiga |
+| Desconexão simulada | Execute `disconnectWallet()` |
 
 ## Estrutura do projeto
 
@@ -129,17 +150,16 @@ A aplicação é publicada na Vercel a partir da branch `main`. O `vercel.json` 
 
 ## Status
 
-> **Pendente (atualizar):** 
-
 | Área | Situação |
 |---|---|
 | Início: busca, abas, filtros, ordenação, paginação na URL | Concluído |
 | Detalhe do NFT e favoritos otimistas | Concluído |
 | Login, cadastro, sessão, rotas privadas, logout | Concluído |
-| Tempo real: infraestrutura Socket.IO sobre MSW | Concluído (eventos de negócio pendentes) |
-| Carrinho e cupom | Pendente |
-| Pagamento, pedidos idempotentes e confirmação | Pendente |
-| Eventos `nft.updated` e `order.updated` | Pendente |
-| Perfil e carteiras | Pendente |
+| Tempo real: eventos de negócio sobre Socket.IO/MSW | Concluído |
+| Carrinho, cupom e cotação | Concluído |
+| Carteiras, conexões e redes | Concluído |
+| Pagamento, pedidos idempotentes e confirmação | Concluído |
+| Eventos `nft.updated` e `order.updated` | Concluído |
+| Perfil | Concluído |
 | Testes Playwright | Pendente |
 | Lighthouse | Pendente |

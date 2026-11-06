@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
@@ -158,6 +158,15 @@ export function PaymentPage() {
   const [notice, setNotice] = useState<string>()
   const [formError, setFormError] = useState<string>()
   const [step, setStep] = useState<Step>('idle')
+  const previousQuoteId = useRef(cart?.quoteId)
+
+  useEffect(() => {
+    if (!cart) return
+    if (previousQuoteId.current && previousQuoteId.current !== cart.quoteId) {
+      setNotice('Os valores ou itens do carrinho foram atualizados. Confira o novo resumo antes de confirmar.')
+    }
+    previousQuoteId.current = cart.quoteId
+  }, [cart?.quoteId])
 
   const walletId = pickedWallet || wallets[0]?.id || ''
   const canAddWallet = wallets.length < 2

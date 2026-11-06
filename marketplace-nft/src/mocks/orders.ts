@@ -1,4 +1,5 @@
 import { db } from './db'
+import { emitOrderUpdated } from './realtime'
 
 export const SETTLE_DELAY_MS = 2500
 
@@ -56,4 +57,7 @@ export function settleDueOrders(userId: string) {
       }
     }
   })
+  for (const entry of due) {
+    emitOrderUpdated(entry.order, entry.userId)
+  }
 }

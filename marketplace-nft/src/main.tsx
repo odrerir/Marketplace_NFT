@@ -6,6 +6,7 @@ import { installSessionExpiry } from './lib/auth'
 import { queryClient } from './lib/query-client'
 import { routeTree } from './routeTree.gen'
 import './index.css'
+import { RealtimeClient } from './lib/realtime-client'
 
 const router = createRouter({ routeTree, context: { queryClient } })
 installSessionExpiry(router)
@@ -28,6 +29,7 @@ enableMocking()
     createRoot(document.getElementById('root')!).render(
       <StrictMode>
         <QueryClientProvider client={queryClient}>
+          <RealtimeClient />
           <RouterProvider router={router} />
         </QueryClientProvider>
       </StrictMode>,

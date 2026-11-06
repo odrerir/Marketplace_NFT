@@ -2,8 +2,6 @@
 
 Este documento registra como a solução está organizada, os contratos simulados, as políticas de sessão e de cache, as decisões de UX, os desvios do Figma e as limitações conhecidas.
 
-> **Pendente (atualizar antes de entregar):** as seções marcadas como pendentes dependem de funcionalidades ainda não implementadas. Remova ou preencha cada uma.
-
 ## 1. Visão geral
 
 A aplicação é uma SPA em React. Não há backend: o MSW intercepta as requisições HTTP no navegador (service worker) e as conexões WebSocket (interceptor do próprio MSW). O código das telas, os hooks e o cliente Axios não contêm dados fictícios nem caminhos alternativos de negócio, e só enxergam uma API REST e um servidor Socket.IO.
@@ -24,7 +22,7 @@ Tela -> socket.io-client -> [WebSocket] -> MSW (binding Socket.IO) -> banco simu
 
 ## 2. Contratos REST (simulados)
 
-Erros usam o formato `{ code, message, fieldErrors? }`, com `code` em `VALIDATION_ERROR`, `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `FORBIDDEN`, `NOT_FOUND`, `CONFLICT` e `TRANSIENT`.
+Erros usam o formato `{ code, message, fieldErrors?, cart? }`, com `code` em `VALIDATION_ERROR`, `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `FORBIDDEN`, `NOT_FOUND`, `CONFLICT`, `TRANSIENT` e `QUOTE_CHANGED`.
 
 | Método e caminho | Autenticação | Respostas |
 |---|---|---|
@@ -37,10 +35,25 @@ Erros usam o formato `{ code, message, fieldErrors? }`, com `code` em `VALIDATIO
 | `GET /api/favorites` | Sim | 200 `{ nftIds }`; 401 |
 | `PUT /api/favorites/:nftId` | Sim | 204 (idempotente); 404; 401 |
 | `DELETE /api/favorites/:nftId` | Sim | 204 (idempotente); 401 |
+| `GET /api/cart` | Não/Sim | 200 cotação do carrinho |
+| `POST /api/cart/items` | Não/Sim | 200 carrinho atualizado; 400 validação |
+| `PATCH /api/cart/items/:id` | Não/Sim | 200 carrinho atualizado; 404 |
+| `DELETE /api/cart/items/:id` | Não/Sim | 200 carrinho atualizado; 404 |
+| `PUT /api/cart/coupon` | Não/Sim | 200 carrinho com cupom aplicado |
+| `DELETE /api/cart/coupon` | Não/Sim | 200 carrinho sem cupom |
+| `POST /api/cart/merge` | Sim | 200 `{ ...cart, merged }`, mesclando o carrinho anônimo |
+| `GET /api/wallets` | Sim | 200 `{ items }` |
+| `POST /api/wallets` | Sim | 201 carteira criada |
+| `PATCH /api/wallets/:id` | Sim | 200 carteira atualizada; 404 |
+| `POST /api/wallet-connections` | Sim | 200 ou 201 conexão criada |
+| `DELETE /api/wallet-connections/:id` | Sim | 204; 404 |
+| `POST /api/orders` | Sim | 201 pedido; requer `Idempotency-Key`; pode retornar 409 `QUOTE_CHANGED` com o carrinho atualizado |
+| `GET /api/orders/:id` | Sim | 200 pedido; 404 |
+| `GET /api/orders?idempotencyKey=:key` | Sim | 200 `{ items }`; usado para recuperar pedido cuja resposta se perdeu |
 
 Parâmetros de `GET /api/nfts`: `page`, `pageSize`, `q`, `category`, `network`, `minPrice`, `maxPrice`, `tab` (`new` ou `trending`) e `sort` (`price_asc`, `price_desc`; o padrão é o mais recente). A busca `q` cobre nome, coleção, token e categoria.
 
-> **Pendente:** documentar carrinho, cotação (cupom, taxas, disponibilidade), pedidos (criação idempotente e consulta), perfil e carteiras, e os eventos Socket.IO (`nft.updated`, `order.updated`), com identidade, recurso afetado e versão.
+O carrinho contém itens, cupom, subtotal, desconto, taxa de rede, total, quantidade, disponibilidade e `quoteId`. A rede, a taxa de rede e o saldo da carteira são calculados sem incluir a conexão em pedidos. `Idempotency-Key` identifica a intenção de criar um pedido; repetir a mesma chave devolve o mesmo pedido. `QUOTE_CHANGED` indica que o `quoteId` deixou de representar o carrinho atual.
 
 ## 3. Valores em ETH
 
@@ -71,17 +84,18 @@ Valores em ETH trafegam como **strings decimais** (`"1.19"`), nunca como `number
 
 **Estado da URL:** busca, aba, ordenação, filtros e página vivem nos parâmetros de busca do TanStack Router, validados por `parseHomeSearch`. Sobrevivem a refresh e ao histórico do navegador. Mudar qualquer filtro reinicia a paginação, e a digitação na busca só escreve na URL após 300 ms de pausa.
 
-> **Pendente:** descrever o estado do carrinho (servidor, mesclagem do carrinho de visitante ao entrar) e a reconciliação entre REST e Socket.IO (versões, duplicatas, reconexão).
+O carrinho pertence ao visitante ou ao usuário e é persistido junto ao banco mock. Ao entrar, o carrinho visitante é mesclado uma vez ao carrinho autenticado; a reconciliação considera `quoteId`, disponibilidade e conteúdo atualizado da cotação.
 
 ## 6. Mocks (MSW)
 
-- **Banco simulado** (`src/mocks/db.ts`): usuários, sessões, NFTs e favoritos, persistido no `localStorage` (`kurio-mock-db:v3`). Todas as escritas passam por `db.update`. `db.reset()` restaura integralmente o cenário conhecido.
+- **Banco simulado** (`src/mocks/db.ts`): usuários, sessões, NFTs, favoritos, carrinho, carteiras, conexões e pedidos, persistidos no `localStorage` (`kurio-mock-db:v5`). Todas as escritas passam por `db.update`. `db.reset()` restaura integralmente o cenário conhecido.
 - **Fixtures:** 36 NFTs determinísticos (sem aleatoriedade), com categorias, redes, preços, edições e alguns itens esgotados; e dois usuários fictícios.
-- **Falhas configuráveis:** `__kurioMock.setFailure(grupo, 'http500' | 'network' | 'none')`. Hoje o grupo `favorites` está ligado a esse mecanismo.
+- **Falhas configuráveis:** `__kurioMock.setFailure(grupo, 'http500' | 'network' | 'none')`. Grupos disponíveis: `favorites`, `cart`, `wallets` e `orders`.
+- **Opções de fluxo:** `__kurioMock.setOption('payment', 'confirm' | 'refuse' | 'timeout')` controla a confirmação do pedido; `__kurioMock.setOption('wallet', 'ok' | 'refuse')` controla a conexão de carteira.
+- **Variações de dados:** `__kurioMock.changeNft(id, patch)` altera dados persistidos de um NFT; `__kurioMock.disconnectWallet()` força uma desconexão simulada.
 - **Latência:** os handlers usam atrasos fixos (150 a 600 ms).
 - **Ativação:** por `VITE_ENABLE_MOCKS`, presente no build publicado.
 
-> **Pendente:** latência variável e respostas fora de ordem, timeout após criação do pedido, preço alterado durante a compra e os demais cenários exigidos.
 
 ## 7. Tempo real (Socket.IO sobre MSW)
 
@@ -92,15 +106,25 @@ Valores em ETH trafegam como **strings decimais** (`"1.19"`), nunca como `number
 - **Reconexão:** testada derrubando a conexão no servidor simulado; o cliente reconecta sozinho.
 - **Limitações do binding:** sem salas, namespaces nem broadcast.
 
-> **Pendente:** eventos `nft.updated` e `order.updated`, tolerância a duplicatas e eventos antigos, reconciliação com REST após reconectar e isolamento por sessão.
+Os eventos de negócio são reconciliados pelo recurso e pela versão. Eventos antigos ou duplicados são ignorados pelo cliente, e o estado REST continua sendo a fonte para recuperar dados após reconectar. A conexão não faz parte do conteúdo persistido do pedido.
 
 ## 8. Decisões de UX
+
+- **Rede da transação:** vem da carteira cadastrada selecionada, não de uma escolha de rede feita no pagamento.
+- **Conexão de carteira:** pode ser repetidamente criada ou recuperada sem alterar nem duplicar o pedido; reconectar não cria um novo pedido.
+- **Liquidação:** pendências e liquidações são aplicadas sob demanda durante a consulta do pedido, sem depender de um timer.
+- **Estoque:** a disponibilidade é reservada visualmente no carrinho, mas o estoque só diminui quando o pagamento é confirmado.
+- **Recibo:** é um snapshot do pedido confirmado; alterações posteriores do carrinho ou dos dados atuais não o alteram.
 
 - **Botão central da barra inferior (mobile):** o Figma não define a ação. Foi implementado como atalho para o campo de busca.
 - **Busca no desktop:** vira um ícone no cabeçalho que expande um campo. Ao fechar, a busca é limpa, para não ficar um filtro ativo invisível.
 - **Filtros no mobile:** o Figma tem só o botão. Foi criado um drawer lateral (com foco preso e `Esc`) que reaproveita o mesmo painel de filtros do desktop.
 - **Faixa de preço:** dois campos (mínimo e máximo) em ETH, validados, com o botão "Aplicar"; os limites disponíveis vêm da API. Categoria e rede filtram ao clicar.
 - **Login e cadastro:** um cartão centralizado nas duas larguras (o Figma desktop usa um modal sobre a Início). Foi acrescentado um botão "Voltar".
+- **Pagamento mobile:** usa a mesma página responsiva do desktop, sem uma implementação de tela separada.
+- **Perfil do colecionador:** a versão implementada contém nome, e-mail e observação; os campos de carteira do Figma foram substituídos pela seleção de carteiras cadastradas.
+- **Confirmação:** é uma página dedicada, enquanto o Figma usa um modal, e não possui frame mobile próprio.
+- **Ver no Etherscan:** o link é visualmente apresentado, mas permanece desabilitado porque aponta para uma ação simulada.
 - **Estados não desenhados** (carregamento, erro, vazio, página inexistente, NFT inexistente, 404 global) seguem o padrão visual existente, com skeletons de mesmas dimensões do conteúdo e respeito a `prefers-reduced-motion`.
 - **Quantidade e edição:** ao trocar de edição ou se a disponibilidade cair, a quantidade se ajusta ao limite, com mensagem em região `status`.
 - **Favoritar deslogado:** leva ao login e volta para a mesma página.
@@ -133,5 +157,3 @@ Navegação por teclado com foco visível; drawer com foco preso (shadcn/ui); fo
 - O carrossel de destaques do banner (pontinhos) não foi implementado.
 - Slider de preço do Figma substituído por campos numéricos.
 - O hash de senha do mock e o token no `localStorage` servem só para a demonstração.
-
-> **Pendente:** acrescentar tudo o que ficar de fora até a entrega (carrinho, checkout, perfil, carteiras, testes e Lighthouse, conforme o que for concluído), com o motivo.

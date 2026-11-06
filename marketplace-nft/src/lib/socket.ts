@@ -1,5 +1,6 @@
 import type { Socket } from 'socket.io-client'
 import { REALTIME_URL } from './realtime'
+import { getToken } from './session'
 
 let socketPromise: Promise<Socket> | undefined
 
@@ -10,7 +11,11 @@ let socketPromise: Promise<Socket> | undefined
  */
 export function getSocket(): Promise<Socket> {
   socketPromise ??= import('socket.io-client').then(({ io }) =>
-    io(REALTIME_URL, { transports: ['websocket'], autoConnect: false }),
+    io(REALTIME_URL, {
+      transports: ['websocket'],
+      autoConnect: false,
+      auth: () => ({ token: getToken() }),
+    }),
   )
   return socketPromise
 }

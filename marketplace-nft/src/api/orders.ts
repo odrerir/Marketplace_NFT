@@ -13,6 +13,11 @@ export async function getOrder(id: string, signal?: AbortSignal) {
   return data
 }
 
+export async function listOrders(signal?: AbortSignal) {
+  const { data } = await api.get<{ items: Order[] }>('/orders', { signal })
+  return data.items
+}
+
 /** Recupera um pedido criado cuja resposta se perdeu. */
 export async function findOrderByKey(idempotencyKey: string) {
   const { data } = await api.get<{ items: Order[] }>('/orders', { params: { idempotencyKey } })
